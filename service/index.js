@@ -1,9 +1,25 @@
 var express = require('express');
 
-const app = express();
 
+var mailService = require('./mailService')
+var userApi = require('./api/userApi')
+
+const app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+//user api
+userApi.api(app);
+
+
+
+//以下測試用
 app.get('/helloworld',function(req,res){
-    res.send('hello world');
+    res.send('hello world');    
+});
+
+app.get('./mail',function(req,res){
     
 });
 
