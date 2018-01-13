@@ -21,3 +21,13 @@ var User = mongoose.model('users', {
     status:{type:Boolean}
 });
 exports.User = User
+
+var Bill = mongoose.model('bills',{
+    owner:{type:String},
+    date:{type:Date},
+    category:{type:Number},
+    name:{type:String},
+    amount:{type:Number},
+    memo:{type:String}
+});
+exports.Bill = Bill

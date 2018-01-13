@@ -3,8 +3,10 @@ var mailService = require('../mailService');
 var helper = require('../helpers/helper')
 var jwt = require('jsonwebtoken')
 var config = require('../config')
+var errorCode = require('../errorCode')
 
 var api = function (app) {
+
     //註冊
     app.post('/register', function (req, res) {
 
@@ -18,9 +20,7 @@ var api = function (app) {
         //註冊信                
         const text = `${req.protocol}://${req.headers.host}/verify?email=${req.body.email}&verification=${verification}`;
         mailService.sendMail(req.body.email, '註冊信', text);
-
         res.json({ message: 'success' });
-
     });
 
     //驗證
@@ -47,7 +47,7 @@ var api = function (app) {
                     }
 
                     else
-                        res.json({ resultCode: '1000' });
+                        res.json({ resultCode: errorCode[0000] });
                 }
             }
         });
@@ -60,19 +60,27 @@ var api = function (app) {
 
         DB.User.findOne({ email: email }).then(user => {
             if (user == null)
-                res.json({ 'resultCode': '1000' })
+                res.json({
+                    result: false,
+                    message: 1000
+                })
             else {
                 if (user.password == password) {
+                    const newUser = {
+                        email: user.email,
+                        _id: user._id
+                    }
                     res.json({
-                        'resultCode': '0000',
-                        message: getToken(user)
+                        result: true,
+                        message: getToken(newUser)
                     })
                 }
-                else
+                else {
                     res.json({
-                        resultCode: '1000',
-                        message: '帳號或密碼錯誤'
+                        result: false,
+                        message: 1000
                     })
+                }
             }
 
         }).catch(function (err) {
@@ -95,10 +103,9 @@ var getVerification = function () {
 }
 
 function getToken(user) {
-    user.password = '';
     const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
-        data: user
+        user: user
     }, 'secret');
     //todo: 有效時間寫入config
 
