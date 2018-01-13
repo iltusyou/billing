@@ -14,15 +14,16 @@ var api = function(app){
 
     //新增
     app.post('/billInsert', function(req,res){
+        console.log('billInsert start')
+
         const data = req.body;
         console.log(data);
-
         var bill = new DB.Bill({
             owner:data.owner,
             date:data.date,
-            category:data.category,
             name:data.name,
             amount:data.amount,
+            category:data.category,                        
             memo:data.memo
         });
 
@@ -37,7 +38,7 @@ var api = function(app){
                 console.log(success)
                 res.json({
                     result:true,
-                    message:success
+                    message:bill
                 });
             }
         });
@@ -46,6 +47,8 @@ var api = function(app){
 
     //修改
     app.post('/billUpdate', function(req,res){
+        console.log('billUpdate start')
+
         const data = req.body;
         console.log(data);
         DB.Bill.findById(data._id,function(err,bill){
@@ -66,6 +69,7 @@ var api = function(app){
                     });
                 }
                 else{
+                    console.log(bill)
                     res.json({
                         result:true,
                         message:bill

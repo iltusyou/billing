@@ -12,22 +12,23 @@ class Category extends Component {
 
     constructor(){
         super()
-        this.state={
-            category:1
-        }
-        this.handleCategory = this.handleCategory.bind(this)
+        // this.state={
+        //     value:props.value
+        // }
+        // this.handleCategory = this.handleCategory.bind(this)
     }
 
-    handleCategory(event, index, value) {
-        console.log('handleCategory')
+    handleCategory = (event, index, value) => {                
+        console.log(value)
+
         if(this.props.handleCategory)
-            this.props.handleCategory(value);
+            this.props.handleCategory(event, index, value);
     }
 
     render() {
         return (
             <SelectField hintText="類別"
-                value={this.props.category}              
+                value={this.props.value}              
                 onChange={this.handleCategory}
             >
                 {items}

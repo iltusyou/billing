@@ -7,7 +7,7 @@ const SERVICE = config.service;
 const BILL_GETLISt = 'BILL_GETLISt'
 const Bill_INSERT = 'Bill_INSERT';
 const BILL_DELETE = 'BILL_DELETE'
-const Bill_UPDATE = 'Bill_UPDATE'
+const BILL_UPDATE = 'BILL_UPDATE'
 
 // reducer
 export default function bill(state = [], action) {
@@ -18,6 +18,16 @@ export default function bill(state = [], action) {
 
         case Bill_INSERT:
             return [action.data, ...state];
+
+        case BILL_UPDATE:
+            return [...state].map((i) => {
+                if (i._id === action.data._id) {
+                    return Object.assign(i, action.data)
+                } 
+                else {
+                    return i
+                }
+            });
 
         case BILL_DELETE:
             let newBillList = []
@@ -45,6 +55,12 @@ export const insertBill = (bill) => {
         data: bill
     }
 }
+export const updateBill = (bill) => {
+    return {
+        type: BILL_UPDATE,
+        data: bill
+    }
+}
 export const deleteBill = (_id) => {
     return {
         type: BILL_DELETE,
@@ -60,6 +76,19 @@ export const apiInsertBill = (bill) => {
                 const newBill = res.data.message;
                 dispatch(insertBill(newBill));
             });
+    }
+}
+
+export const apiUpdateBill = (bill) => {
+    return (dispatch) => {
+        return axios.post(SERVICE + '/billUpdate', bill)
+            .then(res => {
+                const newBill = res.data.message;
+                dispatch(updateBill(newBill));
+            }).catch(err => {
+                console.log(err)
+            });
+
     }
 }
 
@@ -80,7 +109,7 @@ export const apiDeleteBill = (bill) => {
             .then(res => {
                 console.log(res)
                 // const data = res.data;
-                 dispatch(deleteBill(res.data.message))
+                dispatch(deleteBill(res.data.message))
 
             });
     }

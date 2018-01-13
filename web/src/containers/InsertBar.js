@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
-
+import DatePicker from 'material-ui/DatePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import SelectField from 'material-ui/SelectField';
@@ -11,7 +11,7 @@ import * as billReducer from '../reducers/bill.js';
 import config from '../config.js';
 import * as datetimeHelper from '../helper/datetimeHelper.js'
 import Category from '../component/Category.js';
-import DatePicker from '../component/DatePicker';
+
 
 const items = [
     <MenuItem key={1} value={1} primaryText="Never" />,
@@ -49,7 +49,7 @@ class InsertBar extends Component {
         console.log(this.state)
     }    
 
-    handleDate(date) {        
+    handleDate(event, date) {        
         this.setState({
             date: date
         });
@@ -105,7 +105,7 @@ class InsertBar extends Component {
         const bill = {
             owner: this.props.userInfo.user._id,
             category: state.category,
-            date: datetimeHelper.getDateServiceFormat(state.date),
+            date: state.date,
             name: state.name,
             amount: state.amount,
             memo: state.memo
@@ -137,8 +137,8 @@ class InsertBar extends Component {
                     <ToolbarGroup firstChild={false}>
                         <DatePicker
                             name="search-date-start" hintText="帳目日期"
-                            date={this.state.date}
-                            handleDate={this.handleDate} />
+                            value={this.state.date}
+                            onChange={this.handleDate} />
                         <TextField
                             name="search-name" hintText="帳目名稱"
                             value={this.state.name}

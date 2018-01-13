@@ -11,17 +11,18 @@ import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
-
 import * as billReducer from '../reducers/bill.js';
 import SearchBar from './SearchBar.js';
 import InsertBar from './InsertBar.js';
+import Editor from './Editor.js';
+import config from '../config.js';
 
 const style = {
     margin: 12,
+    float:'left'
   };
   
 class BillList extends Component {
-
 
     componentWillMount() {
         const bill = {
@@ -59,34 +60,36 @@ class BillList extends Component {
                 </div>
 
                 <div className="billList-area">
-                    <InsertBar />
+                    {/* <InsertBar /> */}
                 </div>
 
                 <div className="billList-area">
                     <h3>帳目清單</h3>
                     <hr />
-
+                    <Editor label="新增"/>
                     <Table selectable={false}>
-                        <TableHeader>
+                        <TableHeader displaySelectAll={false} adjustForCheckbox={false}> 
                             <TableRow>
                                 <TableHeaderColumn>日期</TableHeaderColumn>
-                                <TableHeaderColumn>類別</TableHeaderColumn>
                                 <TableHeaderColumn>名目</TableHeaderColumn>
                                 <TableHeaderColumn>金額</TableHeaderColumn>
+                                <TableHeaderColumn>類別</TableHeaderColumn>
                                 <TableHeaderColumn>備註</TableHeaderColumn>
                                 <TableHeaderColumn>編輯</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody displayRowCheckbox={false}>
                             {this.props.billList.map((row, index) => (
                                 <TableRow key={index}>
                                     <TableRowColumn>{row.date}</TableRowColumn>
-                                    <TableRowColumn>{row.category}</TableRowColumn>
-                                    <TableRowColumn>{row.name}</TableRowColumn>
+                                    <TableRowColumn>{row.name}</TableRowColumn>                                
                                     <TableRowColumn>{row.amount}</TableRowColumn>
+                                    <TableRowColumn>{config.category[row.category]}</TableRowColumn>
                                     <TableRowColumn>{row.memo}</TableRowColumn>
-                                    <TableRowColumn>
-                                        <RaisedButton label="更新" primary={true} style={style} />
+
+                                    {/* 編輯 */}
+                                    <TableRowColumn style={{width:'20%'}}>
+                                        <Editor style={style} label="編輯" data={row}/>
                                         <RaisedButton label="刪除" secondary={true} style={style} 
                                             onClick={() => this.handleDelete(row._id)}/>
                                     </TableRowColumn>
@@ -109,8 +112,14 @@ const mapDispatchToProps = (dispatch) => {
         apiGetBillList: (bill) => {
             dispatch(billReducer.apiGetBillList(bill))
         },
+        apiUpdateBill:(bill) =>{
+            dispatch(billReducer.apiUpdateBill(bill))
+        },
         apiDeleteBill:(bill) =>{
             dispatch(billReducer.apiDeleteBill(bill))
+        },
+        apiInsertBill: (bill) => {
+            dispatch(billReducer.apiInsertBill(bill))
         }
     }
 }
