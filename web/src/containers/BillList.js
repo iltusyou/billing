@@ -7,13 +7,10 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
-import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
 import * as billReducer from '../reducers/bill.js';
 import SearchBar from './SearchBar.js';
-import InsertBar from './InsertBar.js';
 import Editor from './Editor.js';
 import config from '../config.js';
 
@@ -38,6 +35,11 @@ class BillList extends Component {
     componentDidMount() {
         console.log('componentDidMount')
         console.log(this.props.billList)
+    }
+
+    dateFormat = (date) =>{
+        var d = new Date(date);
+        return d.toLocaleDateString();
     }
 
     handleDelete = (_id) => {
@@ -81,7 +83,7 @@ class BillList extends Component {
                         <TableBody displayRowCheckbox={false}>
                             {this.props.billList.map((row, index) => (
                                 <TableRow key={index}>
-                                    <TableRowColumn>{row.date}</TableRowColumn>
+                                    <TableRowColumn>{this.dateFormat(row.date)}</TableRowColumn>
                                     <TableRowColumn>{row.name}</TableRowColumn>                                
                                     <TableRowColumn>{row.amount}</TableRowColumn>
                                     <TableRowColumn>{config.category[row.category]}</TableRowColumn>

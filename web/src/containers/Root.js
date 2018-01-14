@@ -9,7 +9,6 @@ import AppBar from 'material-ui/AppBar';
 import BillList from './BillList.js';
 import Login from './Login.js';
 import Test from './Test.js';
-import Header from './Header.js';
 import '../App.css';
 
 import { connect } from 'react-redux';
