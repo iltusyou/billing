@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import { Redirect } from 'react-router'
 import { connect } from 'react-redux';
 import * as userInfoReducer from '../reducers/userInfo.js';
-
 
 const buttonStyle = {
     margin: '15px'
@@ -74,8 +73,6 @@ class Login extends Component {
         var validate = this.state.emailValidate && this.state.passwordValidate;
         if (!validate) return;
 
-        console.log(`email:${this.state.email}, password:${this.state.password}`);
-
         const user = {
             email:this.state.email,
             password:this.state.password
@@ -112,6 +109,9 @@ class Login extends Component {
                     <RaisedButton label="註冊" primary={true}
                     />
                 </div>
+
+                {/* 有登入情況下的轉導頁 */}
+                {this.props.userInfo.isAuthenticated ? <Redirect to='/' /> : null}
             </div>
         );
     }

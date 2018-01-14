@@ -41,12 +41,7 @@ export default function userInfo(state, action) {
                 statusText: 'login success'
             }
         case USER_LOGOUT:
-            return {
-                user: null,
-                isAuthenticated: false,
-                isAuthenticating: false,
-                statusText: 'logout success'
-            }
+            return initialState;
 
         case USER_REGIST:
             return {

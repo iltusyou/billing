@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import * as billReducer from '../reducers/bill.js';
 import SearchBar from './SearchBar.js';
 import Editor from './Editor.js';
+import Auth from './Auth.js'
 import config from '../config.js';
 
 const style = {
@@ -20,21 +21,29 @@ const style = {
   };
   
 class BillList extends Component {
-
-    componentWillMount() {
-        const bill = {
-            owner: this.props.userInfo.user._id
-        }
-        console.log(bill)
-
-        if (this.props.apiGetBillList) {
-            this.props.apiGetBillList(bill)
+    static defaultProps = {
+        userInfo: {
+            user:{_id:''}
         }
     }
 
-    componentDidMount() {
-        console.log('componentDidMount')
-        console.log(this.props.billList)
+    constructor(){
+        super()
+    }
+
+
+    componentWillMount() {
+        console.log(this.props)
+        if(this.props.userInfo.user){
+            
+            const bill = {
+                owner: this.props.userInfo.user._id
+            }     
+    
+            if (this.props.apiGetBillList) {
+                this.props.apiGetBillList(bill)
+            }
+        }        
     }
 
     dateFormat = (date) =>{
@@ -56,14 +65,12 @@ class BillList extends Component {
     render() {
         return (
             <div>
+                <Auth/>
+
                 {/* Search */}
                 <div className="billList-area">
                     <SearchBar />
-                </div>
-
-                <div className="billList-area">
-                    {/* <InsertBar /> */}
-                </div>
+                </div>                
 
                 <div className="billList-area">
                     <h3>帳目清單</h3>

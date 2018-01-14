@@ -39,12 +39,19 @@ class Editor extends Component {
             name: data.name,
             amount: data.amount,
             category: data.category,
-            memo: data.memo
+            memo: data.memo,
+
+            //初始錯誤訊息            
+            nameErrorMsg: null,
+            amountErrorMsg: null,
+            memoErrorMsg: null
         }
     }
 
     handleOpen = () => {
-        this.setState({ open: true });
+        this.setState({
+            open: true
+        });
     };
 
     handleClose = () => {
@@ -53,6 +60,11 @@ class Editor extends Component {
 
     handleConfirm = () => {
         const state = this.state;
+
+        if ((state.nameErrorMsg || state.amountErrorMsg || state.memoErrorMsg))
+            return;
+
+        console.log(state)
         const owner = this.props.userInfo.user._id;
 
         const bill = {
@@ -92,13 +104,36 @@ class Editor extends Component {
     //name
     handleName = (e) => {
         const value = e.target.value;
-        this.setState({ name: value });
+
+        var errorMsg = null
+        const max = 12;
+        if (value.length > max)
+            errorMsg = `最大字數${max}`
+
+        this.setState({
+            name: value,
+            nameErrorMsg: errorMsg
+        });
     }
 
     //amount
     handleAmount = (e) => {
         const value = e.target.value;
-        this.setState({ amount: value });
+
+        var errorMsg = null;
+
+        if (value.length === 0)
+            errorMsg = '必填欄位';
+        else if (!Number(value) || value[0] == 0)
+            errorMsg = '價格欄位需為數字格式'
+        else if (value.length > 10)
+            errorMsg = '價格不得大於10位數'
+
+        this.setState({
+            amount: value,
+            amountErrorMsg: errorMsg
+        });
+        console.log(this.state)
     }
 
     //category
@@ -110,7 +145,16 @@ class Editor extends Component {
     //memo
     handleMemo = (e) => {
         const value = e.target.value;
-        this.setState({ memo: value });
+
+        var errorMsg = null
+        const max = 50;
+        if (value.length > max)
+            errorMsg = `最大字數${max}`
+
+        this.setState({
+            memo: value,
+            memoErrorMsg: errorMsg
+        });
     }
 
     render() {
@@ -129,6 +173,8 @@ class Editor extends Component {
             />,
         ];
 
+        const state = this.state
+
         return (
             <div style={this.props.style}>
                 <RaisedButton label={this.props.label} primary={true}
@@ -141,23 +187,23 @@ class Editor extends Component {
                     onRequestClose={this.handleClose}
                 >
                     <DatePicker autoOk={true} floatingLabelText="帳目日期"
-                        value={this.state.date}
+                        value={state.date}
                         onChange={this.handleDate}
                     />
                     <br />
                     <TextField hintText="帳目名稱" floatingLabelText="帳目名稱"
-                        value={this.state.name}
+                        value={state.name} errorText={state.nameErrorMsg}
                         onChange={this.handleName} />
                     <br />
-                    <TextField hintText="帳目金額" floatingLabelText="帳目金額"
-                        value={this.state.amount}
+                    <TextField hintText="帳目金額" floatingLabelText="帳目金額" errorText={state.amountErrorMsg}
+                        value={state.amount}
                         onChange={this.handleAmount} />
                     <br />
-                    <TextField hintText="備註" floatingLabelText="備註"
-                        value={this.state.memo}
+                    <TextField hintText="備註" floatingLabelText="備註" multiLine={true} rowsMax={4}
+                        value={state.memo} errorText={state.memoErrorMsg}
                         onChange={this.handleMemo} />
                     <br />
-                    <Category value={this.state.category}
+                    <Category value={state.category}
                         handleCategory={this.handleCategory} />
                 </Dialog>
             </div>

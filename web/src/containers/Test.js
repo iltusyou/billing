@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Test = ()=>(
+const Test = () => (
     <div>
-        test
-        </div>
+        此頁不需登入即可瀏覽
+    </div>
 );
 export default Test;

@@ -4,9 +4,31 @@ var api = function(app){
 
     //查詢    
     app.post('/getBillList',function(req, res){
+        console.log('getBillList start')
         const data = req.body;
+        console.log(data)
 
-        DB.Bill.find({owner:data.owner},function(err, success){
+        var searchData = {
+            owner:data.owner            
+        }      
+        if(data.name)
+            searchData.name = { "$regex": data.name, "$options": "i" }
+        
+        if(data.category) 
+            searchData.category= data.category;
+
+        if(data.dateStart||data.dateEnd){
+            var dateRange={};
+            if(data.dateStart)
+                dateRange.$gte=data.dateStart
+            if(data.dateEnd)
+                dateRange.$lte=data.dateEnd
+            searchData.date = dateRange            
+        }
+
+        console.log('searchData')
+        console.log(searchData)
+        DB.Bill.find(searchData,function(err, success){
             console.log(success);
             res.json(success);
         });

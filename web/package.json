@@ -11,6 +11,7 @@
     "react-dom": "^16.2.0",
     "react-global-configuration": "^1.2.0",
     "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "react-validation": "^3.0.7",
     "reactjs-router": "^1.0.3",
