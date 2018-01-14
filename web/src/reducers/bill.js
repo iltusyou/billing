@@ -1,11 +1,12 @@
 import axios from 'axios';
 import config from '../config.js';
+import * as tokenHelper from '../helper/tokenHelper.js'
 
 const SERVICE = config.service;
 
 // action types
 const BILL_GETLISt = 'BILL_GETLISt'
-const Bill_INSERT = 'Bill_INSERT';
+const BILL_INSERT = 'BILL_INSERT';
 const BILL_DELETE = 'BILL_DELETE'
 const BILL_UPDATE = 'BILL_UPDATE'
 
@@ -16,7 +17,7 @@ export default function bill(state = [], action) {
         case BILL_GETLISt:
             return action.data;
 
-        case Bill_INSERT:
+        case BILL_INSERT:
             return [action.data, ...state];
 
         case BILL_UPDATE:
@@ -51,7 +52,7 @@ export const getBillList = (billList) => {
 }
 export const insertBill = (bill) => {
     return {
-        type: Bill_INSERT,
+        type: BILL_INSERT,
         data: bill
     }
 }
@@ -71,7 +72,7 @@ export const deleteBill = (_id) => {
 //api
 export const apiInsertBill = (bill) => {
     return (dispatch) => {
-        return axios.post(SERVICE + '/billInsert', bill)
+        return axios.post(SERVICE + '/billInsert', tokenHelper.reqWithToken(bill))
             .then(res => {
                 const newBill = res.data.message;
                 dispatch(insertBill(newBill));
@@ -81,7 +82,7 @@ export const apiInsertBill = (bill) => {
 
 export const apiUpdateBill = (bill) => {
     return (dispatch) => {
-        return axios.post(SERVICE + '/billUpdate', bill)
+        return axios.post(SERVICE + '/billUpdate', tokenHelper.reqWithToken(bill))
             .then(res => {
                 const newBill = res.data.message;
                 dispatch(updateBill(newBill));
@@ -93,48 +94,37 @@ export const apiUpdateBill = (bill) => {
 }
 
 export const apiGetBillList = (bill) => {
-    return (dispatch) => {
-        return axios.post(SERVICE + '/getBillList', bill)
-            .then(res => {
-                const data = res.data;
-                dispatch(getBillList(data))
 
+    return (dispatch) => {
+        return axios.post(SERVICE + '/getBillList', tokenHelper.reqWithToken(bill))
+            .then(res => {
+                console.log(res)
+                const data = res.data
+                if(data.result){                    
+                    dispatch(getBillList(data.message))
+                }
+                else{
+                    console.log(data)
+                }                
+            })
+            .catch(err=>{
+                console.log(err)
             });
     }
 }
 
 export const apiDeleteBill = (bill) => {
     return (dispatch) => {
-        return axios.post(SERVICE + '/billDelete', bill)
+        return axios.post(SERVICE + '/billDelete', tokenHelper.reqWithToken(bill))
             .then(res => {
-                console.log(res)
-                // const data = res.data;
-                dispatch(deleteBill(res.data.message))
-
+                const data = res.data
+                if(data.result)                                
+                    dispatch(deleteBill(res.data.message))
+                else
+                    console.log(data)
+            })
+            .catch(err=>{
+                console.log(err)
             });
     }
 }
-
-// export const apiBillGetList = () => {
-//     return (dispatch) => {
-//         return axios.post('http://localhost:8080/goodsInsert', {
-//             owner: goods.owner,
-//             title: goods.title,
-//             description: goods.description,
-//             price: goods.price,
-//             amount: goods.amount,
-//             status: goods.status
-//         }).then(res => {
-//             const data = res.data
-//             if (data.result) {
-//                 const newGoods = Object.assign({ _id: data.message }, goods)
-//                 dispatch(goodsInsert(newGoods))
-//             }
-//             else {
-//                 console.log(data.message)                    
-//             }
-//         }).catch(err => {
-//             console.log(err)
-//         });
-//     };
-// }

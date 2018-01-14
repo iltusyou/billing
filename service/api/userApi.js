@@ -18,7 +18,7 @@ var api = function (app) {
         userService.createUser(email, password, req.body.userName, verification);
 
         //註冊信                
-        const text = `${req.protocol}://${req.headers.host}/verify?email=${req.body.email}&verification=${verification}`;
+        const text = `請點選以下網址進行信箱驗證： ${req.protocol}://${req.headers.host}/verify?email=${req.body.email}&verification=${verification}`;
         mailService.sendMail(req.body.email, '註冊信', text);
         res.json({ message: 'success' });
     });
@@ -86,7 +86,6 @@ var api = function (app) {
         }).catch(function (err) {
             console.log(err)
         })
-
     });
 
 }
@@ -106,7 +105,7 @@ function getToken(user) {
     const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
         user: user
-    }, 'secret');
+    }, config.secret);
     //todo: 有效時間寫入config
 
     console.log(token)

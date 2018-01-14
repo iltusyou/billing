@@ -2,8 +2,8 @@ var express = require('express');
 var mailService = require('./mailService')
 var userApi = require('./api/userApi')
 var billApi = require('./api/billApi')
-
-var errorCode = require('./errorCode')
+var jwt = require('jsonwebtoken')
+var config = require('./config')
 
 const app = express();
 var bodyParser = require('body-parser');
@@ -21,20 +21,45 @@ app.use('*', function (req, res, next) {
 
 //user api
 userApi.api(app);
+
+app.use(function (req, res, next) {
+    const token = req.body.token || req.query.token || req.headers.authorization;
+    if (token) {
+        jwt.verify(token, config.secret, function (err, decoded) {
+            if(decoded)
+                next()
+
+            else{
+                res.json({
+                    result: false,
+                    resultCode: 1001
+                })
+            }
+        });
+    }
+    else{
+        res.json({ 
+            result: false,
+            resultCode: 1001
+        });
+    }    
+});
+
+//以下需經過驗證
 billApi.api(app);
 
 
 //以下測試用
-app.get('/helloworld',function(req,res){
+app.get('/helloworld', function (req, res) {
     var message = errorCode[0000]
-    res.send(message);    
+    res.send(message);
 });
 
-app.get('./mail',function(req,res){
-    
+app.get('./mail', function (req, res) {
+
 });
 
 var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
     console.log(`listening on ${port}`);
-  });
+});

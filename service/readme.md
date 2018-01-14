@@ -16,6 +16,8 @@ free mongodb
 * https://www.w3schools.com/nodejs/nodejs_email.asp
 node.js send mail example
 
+* https://github.com/auth0/node-jsonwebtoken
+
 ### TODO
 * 資料庫操作改為Promise
 

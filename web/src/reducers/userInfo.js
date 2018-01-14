@@ -1,6 +1,6 @@
 import axios from 'axios'
-import jwtDecode from 'jwt-decode'
 import config from '../config.js';
+import * as tokenHelper from '../helper/tokenHelper.js'
 
 const SERVICE = config.service;
 const USER_REGIST = 'USER_REGIST'
@@ -17,10 +17,10 @@ const initialState = {
 
 export default function userInfo(state, action) {
     if (!state) {
-        const token = getToken()
+        const token = tokenHelper.getToken()
         if (token) {
             return {
-                user: getUserFromToken(token),
+                user: tokenHelper.getUserFromToken(token),
                 isAuthenticated: true,
                 isAuthenticating: false,
                 statusText: 'login success'
@@ -71,7 +71,7 @@ export const login = (user) => {
 }
 
 export const logout = () => {
-    clearToken()
+    tokenHelper.clearToken()
     return {
         type: USER_LOGOUT
     }
@@ -89,8 +89,8 @@ export const apiLogin = (user) => {
             const data = res.data;
             if(data.result){
                 const token = res.data.message;
-                setToken(token);
-                const loginUser = getUserFromToken(token);
+                tokenHelper.setToken(token);
+                const loginUser = tokenHelper.getUserFromToken(token);
                 dispatch(login(loginUser));
             }
             else{
@@ -102,31 +102,3 @@ export const apiLogin = (user) => {
     };
 }
 
-//token 相關處理
-const TOKEN_KEY = 'token'
-const getToken = () => {    
-    return localStorage.getItem(TOKEN_KEY)
-}
-
-const setToken = (token) => {
-    if(token)
-        localStorage.setItem(TOKEN_KEY, token);
-}
-
-const clearToken = () => {
-    localStorage.removeItem(TOKEN_KEY)
-}
-
-const getUserFromToken = (token) => {
-    const decode = jwtDecode(token)        
-    return {
-        _id: decode.user._id,
-        email: decode.user.email,
-        exp:getTokenExp(decode.exp)
-    }
-}
-
-//取得token過期時間
-const getTokenExp = (exp) => {    
-    return new Date(exp * 1000)
-}
