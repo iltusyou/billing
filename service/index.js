@@ -23,13 +23,16 @@ app.use('*', function (req, res, next) {
 userApi.api(app);
 
 app.use(function (req, res, next) {
+    //
     const token = req.body.token || req.query.token || req.headers.authorization;
+    const channelSecret = req.body.channelSecret
+
     if (token) {
         jwt.verify(token, config.secret, function (err, decoded) {
-            if(decoded)
+            if (decoded)
                 next()
 
-            else{
+            else {
                 res.json({
                     result: false,
                     resultCode: 1001
@@ -37,27 +40,26 @@ app.use(function (req, res, next) {
             }
         });
     }
-    else{
-        res.json({ 
+    //line的驗證
+    else if (channelSecret) {
+        if (channelSecret == config.channelSecret)
+            next()
+        else
+            res.json({
+                result: false,
+                resultCode: 1001
+            });
+    }
+    else {
+        res.json({
             result: false,
             resultCode: 1001
         });
-    }    
+    }
 });
 
 //以下需經過驗證
 billApi.api(app);
-
-
-//以下測試用
-app.get('/helloworld', function (req, res) {
-    var message = errorCode[0000]
-    res.send(message);
-});
-
-app.get('./mail', function (req, res) {
-
-});
 
 var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;

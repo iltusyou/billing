@@ -24,10 +24,18 @@ exports.User = User
 
 var Bill = mongoose.model('bills',{
     owner:{type:String},
-    date:{type:Date},
+    date:{type:Date, default:getToday()},
     category:{type:Number},
     name:{type:String},
     amount:{type:Number},
     memo:{type:String}
 });
 exports.Bill = Bill
+
+function getToday(){
+    var today = new Date();
+    var year = today.getFullYear()
+    var month = today.getMonth()
+    var day = today.getDate()        
+    return new Date(year, month, day, 0, 0, 0, 0);   
+}
