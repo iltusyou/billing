@@ -50,7 +50,7 @@ class Login extends Component {
     }
 
     //password
-    checkPassword = (e) => {
+    checkPassword(e){
         let passwordErrorMsg = ''
         let passwordValidate = false;
         var value = e.target.value;
@@ -69,7 +69,7 @@ class Login extends Component {
         });
     }
 
-    login = () => {
+    login = () =>{
         var validate = this.state.emailValidate && this.state.passwordValidate;
         if (!validate) return;
 

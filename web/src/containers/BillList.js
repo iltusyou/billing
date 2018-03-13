@@ -46,6 +46,8 @@ class BillList extends Component {
         }        
     }
 
+        
+
     dateFormat = (date) =>{
         var d = new Date(date);
         return d.toLocaleDateString();
@@ -98,7 +100,7 @@ class BillList extends Component {
 
                                     {/* 編輯 */}
                                     <TableRowColumn style={{width:'20%'}}>
-                                        <Editor style={style} label="編輯" data={row}/>
+                                        <Editor style={style} label="編輯" data={row} className={row._id}/>
                                         <RaisedButton label="刪除" secondary={true} style={style} 
                                             onClick={() => this.handleDelete(row._id)}/>
                                     </TableRowColumn>

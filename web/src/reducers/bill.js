@@ -18,7 +18,9 @@ export default function bill(state = [], action) {
             return action.data;
 
         case BILL_INSERT:
-            return [action.data, ...state];
+            const result = [action.data, ...state];
+            console.log(result)
+            return result;
 
         case BILL_UPDATE:
             return [...state].map((i) => {

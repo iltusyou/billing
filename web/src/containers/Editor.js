@@ -29,10 +29,18 @@ class Editor extends Component {
     }
 
     constructor(props) {
-        const data = props.data
 
         super()
-        this.state = {
+        this.state = this.getData(props.data);
+    }
+    
+    componentWillReceiveProps(nextProps){
+        this.setState(this.getData(nextProps.data));
+    }
+
+    getData(data){        
+        const amountErrorMsg = data._id==null?'請輸入金額':null;
+        const result = {
             open: false,
             _id: data._id,
             date: new Date(data.date),
@@ -43,11 +51,13 @@ class Editor extends Component {
 
             //初始錯誤訊息            
             nameErrorMsg: null,
-            amountErrorMsg: null,
+            amountErrorMsg: amountErrorMsg,
             memoErrorMsg: null
         }
-    }
 
+        return result;        
+    }
+    
     handleOpen = () => {
         this.setState({
             open: true

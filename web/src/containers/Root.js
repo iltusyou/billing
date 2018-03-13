@@ -35,8 +35,8 @@ class Root extends React.Component {
         this.handleClose()
     }
 
-    handleToggle = () => {
-        this.setState({ open: !this.state.open })
+    handleToggle = () => {        
+        this.setState({ open: !this.state.open });
     };
 
     handleClose = () => {
