@@ -1,52 +1,35 @@
 var config = require('./config');
-var express = require('express');
+
+// 引用linebot SDK
 var linebot = require('linebot');
 
+var myLineBot = require('./myLineBot');
+
+// 用於辨識Line Channel的資訊
 var bot = linebot({
-  channelId: config.channelId,
-  channelSecret: config.channelSecret,
-  channelAccessToken: config.channelAccessToken
+    channelId: config.channelId,
+    channelSecret: config.channelSecret,
+    channelAccessToken: config.channelAccessToken
 });
 
-const app = express();
-
-const linebotParser = bot.parser();
-app.post('/linebot', linebotParser);
-
-//回復訊息
+// 當有人傳送訊息給Bot時
 bot.on('message', function (event) {
-  console.log(event);
-  if (event.message.type = 'text') {
-    var msg = event.message.text;
-    event.reply(msg).then(function (data) {
-      console.log(data);
-      console.log(msg);
-
+    console.log('event:',event);
+    var message = event.message.text;
+    var lineUserId = event.source.userId;
+  
+    myLineBot.getReply(lineUserId,message)
+    .then(function(replyMsg){
+        event.reply(replyMsg);           
+        console.log('reply success');
+         
     }).catch(function (error) {
-      console.log('error');
+        event.reply(error);   
+        console.log('reply error');      
     });
-  }
 });
 
-//service restart notice
-setTimeout(function(){
-  var userId = config.userId;
-  var sendMsg = '伺服器重啟';
-  bot.push(userId,sendMsg).then(function(data){
-    console.log(data);
-  });
-  console.log(`userId: ${userId}, sendMsg: ${sendMsg}`);
-},5000);
-
-//發訊息
-var pushMessage = function (userId, sendMsg) {
-  bot.push(userId, sendMsg).then(function (data) {
-    console.log(data);
-  });
-  console.log(`userId: ${userId}, sendMsg: ${sendMsg}`);
-}
-
-var server = app.listen(process.env.PORT || 8080, function () {
-  var port = server.address().port;
-  console.log(`listening on ${port}`);
+var server = bot.listen('/linewebhook', process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log(`listening on ${port}`);
 });
