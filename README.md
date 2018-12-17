@@ -21,7 +21,7 @@ module.exports={
     dbURL:'db connectionString'
 }
 ```
-### [加入好友測試QRCode
+### 加入好友測試QRCode
 ![加入好友測試QRCode](https://qr-official.line.me/M/l_rtVQN-II.png)
 
 ### 功能
